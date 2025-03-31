@@ -77,36 +77,6 @@ jobs:
               return `[[${text}|${fullWikiPath}]]`;
             });
             
-            // Handle image references, preserving subdirectory structure within images/
-            content = content.replace(/!\[([^\]]+)\]\((?!https?:\/\/)([^)]+)\)/g, (match, altText, imagePath) => {
-              // Check if it's already in the correct format (starts with images/)
-              if (imagePath.startsWith('images/')) {
-                return match;
-              }
-              
-              // Handle relative path to image directories that aren't in the images/ folder
-              if (imagePath.includes('/')) {
-                const imageFileName = path.basename(imagePath);
-                
-                // Check if the path has a subdirectory structure we need to preserve
-                // e.g., if the path is something like 'assets/networking/diagram.png'
-                const pathParts = path.dirname(imagePath).split('/');
-                const lastDir = pathParts[pathParts.length - 1];
-                
-                // If the last directory is named 'images', keep the rest of the structure
-                if (lastDir === 'images') {
-                  const subDir = pathParts.slice(0, -1).join('/');
-                  return subDir ? `![${altText}](images/${subDir}/${imageFileName})` : `![${altText}](images/${imageFileName})`;
-                }
-                
-                // If the path has subdirectories (not 'images'), preserve them under images/
-                return `![${altText}](images/${path.dirname(imagePath)}/${imageFileName})`;
-              }
-              
-              // Simple case - just a filename, move it to images/
-              return `![${altText}](images/${imagePath})`;
-            });
-            
             return content;
           }
 
