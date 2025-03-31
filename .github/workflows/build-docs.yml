@@ -67,7 +67,8 @@ jobs:
               // Handle relative paths
               const linkPath = path.resolve(path.dirname(relativePath), link);
               const normalizedPath = path.relative(sourceDir, linkPath);
-              const wikiPageName = sanitizeTitle(path.basename(normalizedPath));
+              // For wiki links, we remove the .md extension
+              const wikiPageName = path.basename(normalizedPath).replace(/\.md$/, '');
               
               // If link has directory structure, include it in the wiki link
               const dirPath = path.dirname(normalizedPath);
@@ -147,16 +148,21 @@ jobs:
                 } else {
                   // Map directories according to directoryMap or keep original structure
                   const mappedDir = Object.keys(directoryMap).find(dir => dirName.startsWith(dir));
+                  
+                  // For wiki pages, convert .md to .md (keep the extension for files on disk)
+                  // But remove spaces and other problematic characters
+                  const wikiFileName = fileName.replace(/\s+/g, '-');
+                  
                   if (mappedDir) {
                     const remainingPath = dirName.replace(mappedDir, '').replace(/^\//, '');
                     destPath = path.join(
                       wikiDir, 
                       directoryMap[mappedDir], 
                       remainingPath, 
-                      sanitizeTitle(fileName)
+                      wikiFileName
                     );
                   } else {
-                    destPath = path.join(wikiDir, dirName, sanitizeTitle(fileName));
+                    destPath = path.join(wikiDir, dirName, wikiFileName);
                   }
                 }
                 
