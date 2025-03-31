@@ -234,7 +234,7 @@ cloud_properties:
 
 We can confirm each AMI is a pre-created public AMI. For the `us-east-1` AMI:
 
-[![aws-public-ami](/images/aws/aws-public-ami.png)](https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#Images:visibility=public-images;search=ami-9a43afe0;sort=name)
+[![aws-public-ami](images/aws/aws-public-ami.png)](https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#Images:visibility=public-images;search=ami-9a43afe0;sort=name)
 
 For AWS alone, the BOSH Core Team are creating 16 different AMIs in 16 different AWS regions for each AWS light stemcell.
 
@@ -246,7 +246,7 @@ If you are using an on-premise cloud infrastructure such as vSphere or OpenStack
 
 These stemcells will be substantially larger than "light" stemcells as they contain the entire machine image. On-premise stemcells will be 300+ MB in size, whereas "light" stemcells are tiny 20KB files (discussed in preceding section).
 
-[![bosh-io-stemcell-sizes](/images/bosh-io-stemcell-sizes.png)](http://bosh.io/stemcells)
+[![bosh-io-stemcell-sizes](images/bosh-io-stemcell-sizes.png)](http://bosh.io/stemcells)
 
 Your cloud infrastructure BOSH CPI has the responsibility of converting a stemcell into a machine image.
 

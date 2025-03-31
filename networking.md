@@ -382,7 +382,7 @@ If you are using AWS today, you will instead use VPC networking, and with OpenSt
 
 Consider an AWS VPC with a single subnet:
 
-![aws-subnet](/images/aws/aws-subnet.png)
+![aws-subnet](images/aws/aws-subnet.png)
 
 The basic `cloud-config` configuration would be:
 
@@ -417,7 +417,7 @@ Note: In AWS, 1 subnet = 1 AWS availability zone. Above, all three of the bosh A
 
 Consider a GCP VPC with a single subnet:
 
-![gcp-vpc-networks-bosh](/images/gcp/gcp-vpc-networks-bosh.png)
+![gcp-vpc-networks-bosh](images/gcp/gcp-vpc-networks-bosh.png)
 
 The basic `cloud-config` configuration would be:
 
@@ -453,11 +453,11 @@ The `dns: [8.8.8.8]` configures all VMs to use [Google's public DNS servers](htt
 
 The `tags` are a selection of the available firewall rules and network routes. If the tag matches a firewall rule, then that firewall rule is applied to each instance in that network. For example, the `windows-rdp` tag above matches the firewall rule with the same name below that was preconfigured:
 
-![gcp-vpc-networks-firewall-rules](/images/gcp/gcp-vpc-networks-firewall-rules.png)
+![gcp-vpc-networks-firewall-rules](images/gcp/gcp-vpc-networks-firewall-rules.png)
 
 Other tags are used to identify which networking routes to apply to each instance in the network. The `no-ip` tag in the example above corresponds to the following predefined route in my Google Compute environment. The "next hop" of the route is to the "nat-instance-primary" server which will provide my instances with outbound, public Internet access:
 
-![gcp-vpc-networks-route-details](/images/gcp/gcp-vpc-networks-route-details.png)
+![gcp-vpc-networks-route-details](images/gcp/gcp-vpc-networks-route-details.png)
 
 In GCP, the `type: vip` IP addresses are called, "External IP addresses". For this reason, I've named the network `external`. It is also common for the `type: vip` network to be generically named `vip`.
 

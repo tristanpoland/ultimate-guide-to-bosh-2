@@ -51,7 +51,7 @@ bosh create-env bosh-deployment/bosh.yml \
 
 Visit the VirtualBox application to confirm a new VM has been created:
 
-![vbox-running-bosh-env](/images/virtualbox/vbox-running-bosh-env.png)
+![vbox-running-bosh-env](images/virtualbox/vbox-running-bosh-env.png)
 
 TODO write nice text
 
@@ -481,5 +481,5 @@ bosh delete-env bosh-deployment/bosh.yml \
 
 Visit the VirtualBox application to confirm the VM has been deleted:
 
-![vbox-no-envs](/images/virtualbox/vbox-no-envs.png)
+![vbox-no-envs](images/virtualbox/vbox-no-envs.png)
 

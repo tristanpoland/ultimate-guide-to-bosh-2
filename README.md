@@ -1,5 +1,5 @@
 description: BOSH is an open source tool for release engineering, deployment, lifecycle management, and monitoring of distributed systems. This guide will place you in the middle of daily life with BOSH and gradually guide you toward understanding, and then deploying your own systems, and then through to deep understanding. You'll become a raving fan.
-image_path: /images/bookcover/book-cover-being-read.png
+image_path: images/bookcover/book-cover-being-read.png
 
 # Ultimate Guide to BOSH
 
@@ -9,7 +9,7 @@ It's incredible. Huge companies are using it. Tiny companies are using it. You t
 
 This is the [Ultimate Guide to BOSH](https://ultimateguidetobosh.com).
 
-![book-cover-being-read](/images/bookcover/book-cover-being-read.png)
+![book-cover-being-read](images/bookcover/book-cover-being-read.png)
 
 It will place you in the middle of daily life with BOSH and gradually guide you toward understanding, and then deploying your own systems, and then through to deep understanding. You'll become a raving fan.
 
