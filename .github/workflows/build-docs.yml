@@ -1,0 +1,227 @@
+name: Create GitHub Wiki from Markdown
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'docs/**/*.md'
+      - 'docs/images/**/*'
+      - 'README.md'
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  build-wiki:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch all history for proper git operations
+      
+      - name: Checkout wiki
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ github.repository }}.wiki
+          path: wiki-repo
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      
+      - name: Install dependencies
+        run: npm install fs-extra glob path
+      
+      - name: Copy images directory with subdirectories to wiki
+        run: |
+          mkdir -p wiki-repo/images
+          cp -r docs/images/* wiki-repo/images/ || true
+      
+      - name: Create script file
+        run: |
+          cat > markdown-to-wiki.js << 'EOF'
+          const fs = require('fs-extra');
+          const glob = require('glob');
+          const path = require('path');
+
+          // Configuration
+          const sourceDir = '.';  // Root of your repository
+          const wikiDir = 'wiki-repo';
+          const ignoreDirs = ['.git', '.github', 'node_modules', wikiDir];
+          const directoryMap = {
+            'docs': ''  // Map docs directory to wiki root
+          };
+
+          // Function to sanitize wiki page titles
+          function sanitizeTitle(title) {
+            // Remove file extension and replace spaces with hyphens
+            return title.replace(/\.md$/, '').replace(/\s+/g, '-');
+          }
+
+          // Function to update internal links and image references
+          function updateContent(content, relativePath) {
+            // First, update markdown links to match wiki format
+            content = content.replace(/\[([^\]]+)\]\(([^)]+)\.md\)/g, (match, text, link) => {
+              // Handle relative paths
+              const linkPath = path.resolve(path.dirname(relativePath), link);
+              const normalizedPath = path.relative(sourceDir, linkPath);
+              const wikiPageName = sanitizeTitle(path.basename(normalizedPath));
+              
+              // If link has directory structure, include it in the wiki link
+              const dirPath = path.dirname(normalizedPath);
+              const fullWikiPath = dirPath !== '.' ? `${dirPath}/${wikiPageName}` : wikiPageName;
+              
+              return `[[${text}|${fullWikiPath}]]`;
+            });
+            
+            // Handle image references, preserving subdirectory structure within images/
+            content = content.replace(/!\[([^\]]+)\]\((?!https?:\/\/)([^)]+)\)/g, (match, altText, imagePath) => {
+              // Check if it's already in the correct format (starts with images/)
+              if (imagePath.startsWith('images/')) {
+                return match;
+              }
+              
+              // Handle relative path to image directories that aren't in the images/ folder
+              if (imagePath.includes('/')) {
+                const imageFileName = path.basename(imagePath);
+                
+                // Check if the path has a subdirectory structure we need to preserve
+                // e.g., if the path is something like 'assets/networking/diagram.png'
+                const pathParts = path.dirname(imagePath).split('/');
+                const lastDir = pathParts[pathParts.length - 1];
+                
+                // If the last directory is named 'images', keep the rest of the structure
+                if (lastDir === 'images') {
+                  const subDir = pathParts.slice(0, -1).join('/');
+                  return subDir ? `![${altText}](images/${subDir}/${imageFileName})` : `![${altText}](images/${imageFileName})`;
+                }
+                
+                // If the path has subdirectories (not 'images'), preserve them under images/
+                return `![${altText}](images/${path.dirname(imagePath)}/${imageFileName})`;
+              }
+              
+              // Simple case - just a filename, move it to images/
+              return `![${altText}](images/${imagePath})`;
+            });
+            
+            return content;
+          }
+
+          // Main function to process all markdown files
+          async function processMarkdown() {
+            try {
+              // Create wiki directory if it doesn't exist
+              await fs.ensureDir(wikiDir);
+              await fs.ensureDir(path.join(wikiDir, 'images'));
+              
+              // Find all markdown files
+              const files = glob.sync(`${sourceDir}/**/*.md`, {
+                ignore: ignoreDirs.map(dir => `${sourceDir}/${dir}/**`),
+                nodir: true
+              });
+              
+              console.log(`Found ${files.length} markdown files to process`);
+              
+              // Process each file
+              for (const file of files) {
+                const relativePath = path.relative(sourceDir, file);
+                console.log(`Processing ${relativePath}`);
+                
+                // Read file content
+                let content = await fs.readFile(file, 'utf8');
+                
+                // Update internal links and image references
+                content = updateContent(content, relativePath);
+                
+                // Determine destination path in wiki
+                let destPath = '';
+                let fileName = path.basename(relativePath);
+                const dirName = path.dirname(relativePath);
+                
+                // Handle special case for README.md
+                if (fileName.toLowerCase() === 'readme.md' && dirName === '.') {
+                  fileName = 'Home.md';
+                  destPath = path.join(wikiDir, fileName);
+                } else {
+                  // Map directories according to directoryMap or keep original structure
+                  const mappedDir = Object.keys(directoryMap).find(dir => dirName.startsWith(dir));
+                  if (mappedDir) {
+                    const remainingPath = dirName.replace(mappedDir, '').replace(/^\//, '');
+                    destPath = path.join(
+                      wikiDir, 
+                      directoryMap[mappedDir], 
+                      remainingPath, 
+                      sanitizeTitle(fileName)
+                    );
+                  } else {
+                    destPath = path.join(wikiDir, dirName, sanitizeTitle(fileName));
+                  }
+                }
+                
+                // Ensure destination directory exists
+                await fs.ensureDir(path.dirname(destPath));
+                
+                // Write to wiki
+                await fs.writeFile(destPath, content);
+                console.log(`Written to ${destPath}`);
+              }
+              
+              // Find and copy all image files, preserving their subdirectory structure
+              const imageFiles = glob.sync(`${sourceDir}/**/images/**/*.+(png|jpg|jpeg|gif|svg)`, {
+                ignore: ignoreDirs.map(dir => `${sourceDir}/${dir}/**`),
+                nodir: true
+              });
+              
+              console.log(`Found ${imageFiles.length} image files to copy`);
+              
+              for (const imageFile of imageFiles) {
+                // Get the path relative to the source directory
+                const relativePath = path.relative(sourceDir, imageFile);
+                
+                // Create the destination path preserving the subdirectory structure
+                // But ensure the root directory is 'images'
+                const pathParts = relativePath.split(path.sep);
+                const imagesIndex = pathParts.indexOf('images');
+                
+                let destPath;
+                if (imagesIndex !== -1) {
+                  // If 'images' is in the path, preserve the structure after it
+                  const relevantPath = pathParts.slice(imagesIndex);
+                  destPath = path.join(wikiDir, ...relevantPath);
+                } else {
+                  // If 'images' is not in the path, place the file directly in the images directory
+                  destPath = path.join(wikiDir, 'images', path.basename(imageFile));
+                }
+                
+                // Ensure destination directory exists
+                await fs.ensureDir(path.dirname(destPath));
+                
+                // Copy image file to wiki
+                await fs.copy(imageFile, destPath);
+                console.log(`Copied image to ${destPath}`);
+              }
+              
+              console.log('Wiki generation completed successfully');
+            } catch (error) {
+              console.error('Error processing markdown files:', error);
+              process.exit(1);
+            }
+          }
+
+          // Run the main function
+          processMarkdown();
+          EOF
+      
+      - name: Convert Markdown to Wiki
+        run: node markdown-to-wiki.js
+      
+      - name: Commit and push changes to wiki
+        working-directory: wiki-repo
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git diff --staged --quiet || git commit -m "Update wiki from repository markdown"
+          git push
