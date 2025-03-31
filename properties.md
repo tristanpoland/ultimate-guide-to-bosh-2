@@ -2,7 +2,7 @@
 
 Most software allows for configuration by end users/operators. The method of configuration differs between software, such as environment variables, configuration files, command-line arguments, or runtime commands. A BOSH job template is a wrapper around the running of software and its method of configuration. All BOSH job templates are then configured in a homogeneous way: the deployment manifest provided to `bosh deploy`.
 
-You were first introduced to configuring a job template in [Update Job Template Properties](/deployment-updates/#update-job-template-properties). We were able to provide a `max_client_connections` property to the `zookeeper` job template from the `zookeeper` BOSH release:
+You were first introduced to configuring a job template in [Update Job Template Properties](deployment-updates/#update-job-template-properties). We were able to provide a `max_client_connections` property to the `zookeeper` job template from the `zookeeper` BOSH release:
 
 ```yaml hl_lines="7 8"
 instance_groups:

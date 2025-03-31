@@ -24,7 +24,7 @@ There are also many other additional systems that you could use, or even run the
 
 The least complex method for a client application to discover and connect with a server backend is to explicitly configure the client application in advance. The least complex method of this least complex method is to provide client applications with IP addresses that are promised to always point to the backend service.
 
-A BOSH deployment can do this with either [static IPs](/networking/#manual-static-addresses) or with [virtual/elastic IPs](/networking/#virtual-ip-addresses).
+A BOSH deployment can do this with either [static IPs](networking/#manual-static-addresses) or with [virtual/elastic IPs](networking/#virtual-ip-addresses).
 
 An example of the former is to add a list of `static_ips` to an instance group's `networks`:
 

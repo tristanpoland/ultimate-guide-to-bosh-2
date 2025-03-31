@@ -124,7 +124,7 @@ git clone https://github.com/cppforlife/zookeeper-release
 cat zookeeper-release/manifests/zookeeper.yml
 ```
 
-This base deployment manifest is lovely. It has no [Variables](/deployment-updates/#deployment-manifest-variables); it "Just Works".
+This base deployment manifest is lovely. It has no [Variables](deployment-updates/#deployment-manifest-variables); it "Just Works".
 
 We can confirm that our `BOSH_DEPLOYMENT` name is correct:
 
@@ -236,7 +236,7 @@ Task 4 | 08:43:11 | Creating missing vms: zookeeper/4c77e4e4-5452-4af0-afab-05f4
 Task 4 | 08:43:11 | Creating missing vms: zookeeper/247623ea-8427-4f4a-939c-691faa7ef31f (1) (00:00:54)
 ```
 
-Finally, the BOSH environment will update these five instances in small [Update Batches](/deployment-updates/#update-batches). Two initial canaries, and then one subsequent instance at a time:
+Finally, the BOSH environment will update these five instances in small [Update Batches](deployment-updates/#update-batches). Two initial canaries, and then one subsequent instance at a time:
 
 ```
 Task 4 | 08:43:11 | Updating instance zookeeper: zookeeper/c80f4fd5-3d31-4c1a-a82c-68a166fad0a0 (0) (canary) (00:00:40)
@@ -399,7 +399,7 @@ Stderr     ZooKeeper JMX enabled by default
 
 ## Delete deployment
 
-The `bosh delete-deployment` command will destroy all running instances, and will [orphan its persistent disks](/disks/#orphaned-disks).
+The `bosh delete-deployment` command will destroy all running instances, and will [orphan its persistent disks](disks/#orphaned-disks).
 
 ```
 bosh delete-deployment

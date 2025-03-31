@@ -70,7 +70,7 @@ You can provide a full-formed manifest:
 bosh deploy zookeeper-release/manifests/zookeeper.yml
 ```
 
-Alternately, you can amend a base manifest with `-o` [Operator files](/deployment-updates/#operator-files) and `-v` [Variables](/deployment-updates/#deployment-manifest-variables). For example, to modify the deployment name of the uploaded deployment manifest to use the current `$BOSH_DEPLOYMENT` value to create an Operator file:
+Alternately, you can amend a base manifest with `-o` [Operator files](deployment-updates/#operator-files) and `-v` [Variables](deployment-updates/#deployment-manifest-variables). For example, to modify the deployment name of the uploaded deployment manifest to use the current `$BOSH_DEPLOYMENT` value to create an Operator file:
 
 ```
 export BOSH_DEPLOYMENT=zookeeper-demo
@@ -117,7 +117,7 @@ Once a BOSH deployment has been created successfully, many other `bosh` commands
 
 ## Releases Attribute
 
-* [Releases](/releases/)
+* [Releases](releases/)
 
 ```yaml
 releases:
@@ -128,7 +128,7 @@ releases:
 
 ## Stemcells
 
-* [Stemcells](/stemcells/#stemcells-in-deployment-manifests)
+* [Stemcells](stemcells/#stemcells-in-deployment-manifests)
 
 ```yaml
 stemcells:

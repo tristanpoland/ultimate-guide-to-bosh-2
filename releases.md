@@ -78,7 +78,7 @@ You can discover existing BOSH releases at https://bosh.io/releases.
 
 Try searching Github https://github.com/search?q=bosh+release.
 
-Look thru the [Ask for Help](/ask-for-help/suggestions/) suggestions to find other BOSH users or consultants who can help.
+Look thru the [Ask for Help](ask-for-help/suggestions/) suggestions to find other BOSH users or consultants who can help.
 
 Talk to mysterious strangers at dinner parties.
 
@@ -86,7 +86,7 @@ Talk to mysterious strangers at dinner parties.
 
 A BOSH release is a versioned bundle of job templates, and their dependent packages, that describe a complete running system. The developers of a BOSH release benefit by iterating on bespoke application source code, dependency package versions, and configuration file templates all in the one project. The operators of a BOSH release benefit by using a combination of file templates and packages that are exactly the same combination as the developers intended.
 
-We originally encountered [job templates](/instances/#job-templates) and [packages](/instances/#packages) when we were trawling through the inside of BOSH instances. Monit was configured to start and keep processes running. These processes were configured within job templates: how to run the process and how to configure the application within the process. The job templates need software packages to be pre-installed. These packages need to have been pre-compiled from trusted source files.
+We originally encountered [job templates](instances/#job-templates) and [packages](instances/#packages) when we were trawling through the inside of BOSH instances. Monit was configured to start and keep processes running. These processes were configured within job templates: how to run the process and how to configure the application within the process. The job templates need software packages to be pre-installed. These packages need to have been pre-compiled from trusted source files.
 
 ## Comparing BOSH Releases to Traditional Software Packages
 
